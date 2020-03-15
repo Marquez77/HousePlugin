@@ -1,0 +1,6 @@
+name: HousePlugin
+main: com.marquez.houseplugin
+version: 1.0
+commands:
+  house:
+    description: The HousePlugin's default command.
