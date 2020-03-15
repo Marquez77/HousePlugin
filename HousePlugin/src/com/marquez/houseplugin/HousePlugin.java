@@ -6,7 +6,7 @@ public class HousePlugin extends JavaPlugin{
 	
 	@Override
 	public void onEnable() {
-		
+		getCommand("house").setExecutor(null);
 	}
 	
 	@Override
