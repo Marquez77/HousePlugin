@@ -12,6 +12,7 @@ public class HousePlugin extends JavaPlugin{
 	
 	@Override
 	public void onDisable() {
+		System.out.println("TEST");
 		return;
 	}
 	
