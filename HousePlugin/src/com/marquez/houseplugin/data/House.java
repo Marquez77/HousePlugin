@@ -30,4 +30,5 @@ public class House {
 		this.member = new ArrayList<OfflinePlayer>();
 	}
 
+	
 }
