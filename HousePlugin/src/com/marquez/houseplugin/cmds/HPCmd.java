@@ -43,7 +43,6 @@ public class HPCmd implements CommandExecutor {
 					p.sendMessage(MessageEnum.info_Invalid_Usage.getMessage());
 					return true;
 				}
-				
 				break;
 			case "delete":
 				if(!p.isOp()) {
