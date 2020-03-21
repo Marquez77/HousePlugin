@@ -1,11 +1,14 @@
 package com.marquez.houseplugin.cmds;
 
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.marquez.houseplugin.data.HouseManager;
 import com.marquez.houseplugin.enums.MessageEnum;
+import com.marquez.houseplugin.listener.AreaSelectListener;
 
 public class HPCmd implements CommandExecutor {
 	
@@ -43,6 +46,13 @@ public class HPCmd implements CommandExecutor {
 					p.sendMessage(MessageEnum.info_Invalid_Usage.getMessage());
 					return true;
 				}
+				Location[] locs = AreaSelectListener.getSelected(p);
+				if(locs == null) {
+					p.sendMessage(MessageEnum.House_Create_Fail_ThereIsNoRegion.getMessage());
+					return true;
+				}
+				HouseManager.createHouse(args[1], locs[0], locs[1]);
+				p.sendMessage(MessageEnum.House_Create_Success.getMessage());
 				break;
 			case "delete":
 				if(!p.isOp()) {
@@ -53,6 +63,7 @@ public class HPCmd implements CommandExecutor {
 					p.sendMessage(MessageEnum.info_Invalid_Usage.getMessage());
 					return true;
 				}
+				HouseManager.deleteHouse(args[1]);
 				break;
 			case "buysign":
 				if(!p.isOp()) {

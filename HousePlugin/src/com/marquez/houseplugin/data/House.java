@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
+import com.marquez.houseplugin.HousePlugin;
 import com.marquez.houseplugin.util.Locations;
 
 public class House {
@@ -26,7 +27,7 @@ public class House {
 		this.area = new Locations(pos1, pos2);
 		this.level = 0;
 		this.price = 1;
-		this.maximumPeople = 1;
+		this.maximumPeople = HousePlugin.DEFAULT_MAX_PEOPLE;
 		this.doorCloseTime = 1;
 		this.member = new ArrayList<OfflinePlayer>();
 	}

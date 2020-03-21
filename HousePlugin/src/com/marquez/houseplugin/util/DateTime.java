@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 public class DateTime {
 	
 	private Instant instant;
+	private String regex;
 	
 	public void setInstant(int year, int month, int day, int hrs, int min, int sec, int milli) {
 		@SuppressWarnings("deprecation")
@@ -21,6 +22,7 @@ public class DateTime {
 	}
 	
 	public DateTime(String datetime) {
+		this.regex = datetime;
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		for(Regex regex : Regex.values()) {
 			String r = String.join("|", regex.getRegex());
@@ -56,6 +58,10 @@ public class DateTime {
 	
 	public Date getDate() {
 		return new Date(getMillis());
+	}
+	
+	public String getRegex() {
+		return this.regex;
 	}
 
 }
