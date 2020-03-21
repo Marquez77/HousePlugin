@@ -14,10 +14,51 @@ import com.marquez.houseplugin.util.Locations;
 public class HouseManager {
 	
 	private static HashMap<String, House> houses = new HashMap<String, House>();
+	private static HashMap<Location, String> signs = new HashMap<Location, String>();
+	private static HashMap<Location, String> doors = new HashMap<Location, String>();
+	private static HashMap<Location, String> beds = new HashMap<Location, String>();
+	
+	private static void addHouseValues(House house) {
+		String name = house.getName();
+		houses.put(name, house);
+		if(house.getSignLocation() != null) signs.put(house.getSignLocation(), name);
+		if(house.getDoorLocation() != null) doors.put(house.getDoorLocation(), name);
+		if(house.getBedLocation() != null) beds.put(house.getBedLocation(), name);
+	}
+	
+	private static void removeHouseValues(String name) {
+		if(!houses.containsKey(name)) return;
+		House house = houses.get(name);
+		if(house.getSignLocation() != null) signs.remove(house.getSignLocation());
+		if(house.getDoorLocation() != null) doors.remove(house.getDoorLocation());
+		if(house.getBedLocation() != null) beds.remove(house.getBedLocation());
+		houses.remove(name);
+	}
+	
+	public static boolean setSignLocation(String name, Location loc) {
+		if(signs.containsKey(loc)) return false;
+		houses.get(name).setSignLocation(loc);
+		signs.put(loc, name);
+		return true;
+	}
+	
+	public static boolean setDoorLocation(String name, Location loc) {
+		if(doors.containsKey(loc)) return false;
+		houses.get(name).setDoorLocation(loc);
+		doors.put(loc, name);
+		return true;
+	}
+	
+	public static boolean setBedLocation(String name, Location loc) {
+		if(beds.containsKey(loc)) return false;
+		houses.get(name).setBedLocation(loc);
+		beds.put(loc, name);
+		return true;
+	}
 	
 	public static void createHouse(String name, Location pos1, Location pos2) {
 		House house = new House(name, pos1, pos2);
-		houses.put(name, house);
+		addHouseValues(house);
 		saveData(house);
 	}
 	
@@ -26,7 +67,7 @@ public class HouseManager {
 	}
 	
 	public static void deleteHouse(String name) {
-		houses.remove(name);
+		removeHouseValues(name);
 		StringBuilder sb = new StringBuilder();
 		sb.append("house/").append(name).append(".yml");
 		File file = new File(DataFile.getPlugin().getDataFolder(), sb.toString());
@@ -60,6 +101,12 @@ public class HouseManager {
 		houseData.saveConfig();
 	}
 	
+	public static void saveAllData() {
+		for(House house : houses.values()) {
+			saveData(house);
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static void loadData(String filename) {
 		DataFile houseData = new DataFile(filename);
@@ -80,7 +127,7 @@ public class HouseManager {
 		if(owner != null) house.setOwner((OfflinePlayer)owner);
 		List<?> member = houseDatac.getList("member");
 		if(member != null) house.setMember((List<OfflinePlayer>)member);
-		houses.put(name, house);
+		addHouseValues(house);
 	}
 	
 	public static void loadAllDatas() {

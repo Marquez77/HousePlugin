@@ -1,16 +1,25 @@
 package com.marquez.houseplugin.cmds;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.marquez.houseplugin.HousePlugin;
 import com.marquez.houseplugin.data.HouseManager;
 import com.marquez.houseplugin.enums.MessageEnum;
 import com.marquez.houseplugin.listener.AreaSelectListener;
 
 public class HPCmd implements CommandExecutor {
+	
+	private HousePlugin instant;
+	
+	public HPCmd(HousePlugin instant) {
+		this.instant = instant;
+	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -63,9 +72,14 @@ public class HPCmd implements CommandExecutor {
 					p.sendMessage(MessageEnum.info_Invalid_Usage.getMessage());
 					return true;
 				}
+				if(HouseManager.isExists(args[1])) {
+					p.sendMessage(MessageEnum.House_Delete_FailInvaildHouse.getMessage());
+					return true;
+				}
 				HouseManager.deleteHouse(args[1]);
+				p.sendMessage(MessageEnum.House_Delete_Success.getMessage());
 				break;
-			case "buysign":
+			case "buysign": {
 				if(!p.isOp()) {
 					p.sendMessage(MessageEnum.info_NoPermission.getMessage());
 					return true;
@@ -74,8 +88,22 @@ public class HPCmd implements CommandExecutor {
 					p.sendMessage(MessageEnum.info_Invalid_Usage.getMessage());
 					return true;
 				}
+				if(!HouseManager.isExists(args[1])) {
+					p.sendMessage(MessageEnum.BuySign_Set_Fail_InvalidHouse.getMessage());
+					return true;
+				}
+				Block block = p.getTargetBlock(null, 100);
+				if(block == null || !block.getType().toString().contains("SIGN")) {
+					p.sendMessage(MessageEnum.BuySign_Set_Fail_NoSign.getMessage());
+				}
+				if(HouseManager.setSignLocation(args[1], block.getLocation())) {
+					p.sendMessage(MessageEnum.BuySign_Set_Success.getMessage());
+				}else {
+					p.sendMessage(MessageEnum.BuySign_Set_Fail_TheSignIsAlreadySet.getMessage());
+				}
 				break;
-			case "door":
+			}
+			case "door": {
 				if(!p.isOp()) {
 					p.sendMessage(MessageEnum.info_NoPermission.getMessage());
 					return true;
@@ -84,7 +112,22 @@ public class HPCmd implements CommandExecutor {
 					p.sendMessage(MessageEnum.info_Invalid_Usage.getMessage());
 					return true;
 				}
+				if(!HouseManager.isExists(args[1])) {
+					p.sendMessage(MessageEnum.Door_Set_Fail_InvalidHouse.getMessage());
+					return true;
+				}
+				Block block = p.getTargetBlock(null, 100);
+				if(block == null || !block.getType().toString().contains("DOOR")) {
+					p.sendMessage(MessageEnum.Door_Set_Fail_NoDoor.getMessage());
+					return true;
+				}
+				if(HouseManager.setDoorLocation(args[1], block.getLocation())) {
+					p.sendMessage(MessageEnum.Door_Set_Success.getMessage());
+				}else {
+					p.sendMessage(MessageEnum.Door_Set_Fail_TheSignIsAlreadySet.getMessage());
+				}
 				break;
+			}
 			case "bed":
 				if(!p.isOp()) {
 					p.sendMessage(MessageEnum.info_NoPermission.getMessage());
@@ -94,12 +137,28 @@ public class HPCmd implements CommandExecutor {
 					p.sendMessage(MessageEnum.info_Invalid_Usage.getMessage());
 					return true;
 				}
+				if(!HouseManager.isExists(args[1])) {
+					p.sendMessage(MessageEnum.Bed_Set_Fail_InvalidHouse.getMessage());
+					return true;
+				}
+				Block block = p.getTargetBlock(null, 100);
+				if(block == null || (block.getType() != Material.BED && block.getType() != Material.BED_BLOCK)) {
+					p.sendMessage(MessageEnum.Bed_Set_Fail_NoBed.getMessage());
+					return true;
+				}
+				if(HouseManager.setDoorLocation(args[1], block.getLocation())) {
+					p.sendMessage(MessageEnum.Door_Set_Success.getMessage());
+				}else {
+					p.sendMessage(MessageEnum.Door_Set_Fail_TheSignIsAlreadySet.getMessage());
+				}
 				break;
 			case "reload":
 				if(!p.isOp()) {
 					p.sendMessage(MessageEnum.info_NoPermission.getMessage());
 					return true;
 				}
+				instant.loadConfig();
+				p.sendMessage(MessageEnum.House_Reload_Success.getMessage());
 				break;
 			}
 		}

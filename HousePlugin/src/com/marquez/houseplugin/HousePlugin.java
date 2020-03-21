@@ -2,10 +2,14 @@ package com.marquez.houseplugin;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.marquez.houseplugin.data.HouseManager;
 import com.marquez.houseplugin.enums.MessageEnum;
+import com.marquez.houseplugin.listener.AreaSelectListener;
+import com.marquez.houseplugin.util.DataFile;
 import com.marquez.houseplugin.util.DateTime;
 
 
@@ -18,12 +22,15 @@ public class HousePlugin extends JavaPlugin{
 	
 	@Override
 	public void onEnable() {
-		
+		DataFile.init(this);
+		loadConfig();
+		HouseManager.loadAllDatas();
+		Bukkit.getPluginManager().registerEvents(new AreaSelectListener(), this);
 	}
 	
 	@Override
 	public void onDisable() {
-		
+		HouseManager.saveAllData();
 	}
 	
 	public Object getValue(FileConfiguration config, String key, Object default_value) {
