@@ -34,6 +34,7 @@ public enum MessageEnum {
 	Leave_Success_Owner("[House] 집을 탈퇴하여 집이 삭제되었습니다."),
 	Leave_Success_Owner_Broadcast("[House] 소유자가 집을 제거하였습니다. 모든 멤버가 탈퇴됩니다."),
 	House_Create_Success("[House] %House_Name% 집을 생성하였습니다!"),
+	House_Create_Fail_AlreadyExists("[House] 이미 존재하는 이름입니다."),
 	House_Create_Fail_ThereIsNoRegion("[House] 집 범위가 설정되어 있지 않습니다!"),
 	House_Delete_Success("[House] %House_Name% 집을 제거하였습니다!"),
 	House_Delete_FailInvaildHouse("[House] 존재하지 않는 집입니다."),
