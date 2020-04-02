@@ -11,6 +11,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.marquez.houseplugin.enums.MessageEnum;
+import com.marquez.houseplugin.util.Locations;
 
 public class AreaSelectListener implements Listener{
 	
@@ -27,14 +28,15 @@ public class AreaSelectListener implements Listener{
 		if(e.getItem() != null && e.getItem().getType() == Material.IRON_HOE) {
 			Player p = e.getPlayer();
 			if(!p.hasPermission("house.admin")) return;
+			if(e.getClickedBlock() == null) return;
 			Location loc = e.getClickedBlock().getLocation();
 			Action action = e.getAction();
 			if(action == Action.LEFT_CLICK_BLOCK) {
 				pos1.put(p, loc);
-				p.sendMessage(MessageEnum.Select_Position_1.getMessage());
+				p.sendMessage(MessageEnum.Select_Position_1.getMessage().replace("%Location%", Locations.getLocation2String(loc)));
 			}else if(action == Action.RIGHT_CLICK_BLOCK) {
 				pos2.put(p, loc);
-				p.sendMessage(MessageEnum.Select_Position_1.getMessage());
+				p.sendMessage(MessageEnum.Select_Position_2.getMessage().replace("%Location%", Locations.getLocation2String(loc)));
 			}
 			e.setCancelled(true);
 		}
