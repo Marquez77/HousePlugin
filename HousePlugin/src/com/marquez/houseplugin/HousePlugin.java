@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.marquez.houseplugin.cmds.HPCmd;
 import com.marquez.houseplugin.data.HouseManager;
 import com.marquez.houseplugin.enums.MessageEnum;
 import com.marquez.houseplugin.listener.AreaSelectListener;
@@ -22,9 +23,10 @@ public class HousePlugin extends JavaPlugin{
 	
 	@Override
 	public void onEnable() {
-		DataFile.init(this);
 		loadConfig();
+		DataFile.init(this);
 		HouseManager.loadAllDatas();
+		getCommand("house").setExecutor(new HPCmd(this));
 		Bukkit.getPluginManager().registerEvents(new AreaSelectListener(), this);
 	}
 	

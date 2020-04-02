@@ -28,7 +28,7 @@ public class HPCmd implements CommandExecutor {
 			return true;
 		}
 		if(args.length == 0 || args[0].equals("help")) {
-			sender.sendMessage(MessageEnum.House_Info_Command.getMessage());
+			sender.sendMessage(MessageEnum.House_Help_Command.getMessages());
 			return true;
 		}else {
 			Player p = (Player)sender;
@@ -37,14 +37,19 @@ public class HPCmd implements CommandExecutor {
 				
 				break;
 			case "kick":
+				
 				break;
 			case "info":
+				
 				break;
 			case "teleport":
+				
 				break;
 			case "doorautoclose":
+				
 				break;
 			case "leave":
+				
 				break;
 			case "create":
 				if(!p.isOp()) {

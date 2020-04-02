@@ -132,6 +132,7 @@ public class HouseManager {
 	
 	public static void loadAllDatas() {
 		File folder = new File(DataFile.getPlugin().getDataFolder(), "house");
+		if(!folder.exists()) folder.mkdir();
 		for(String filename : folder.list()) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("house/").append(filename);
