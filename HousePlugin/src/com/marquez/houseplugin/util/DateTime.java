@@ -12,9 +12,12 @@ public class DateTime {
 	private String regex;
 	
 	public void setInstant(int year, int month, int day, int hrs, int min, int sec, int milli) {
-		@SuppressWarnings("deprecation")
-		Date date = new Date(year, month, day, hrs, min, sec);
-		this.instant = date.toInstant().plusMillis(milli);
+		if(year == 0) this.instant = Instant.ofEpochMilli(((((day*24+hrs)*60+min)*60+sec)*1000+milli));
+		else {
+			@SuppressWarnings("deprecation")
+			Date date = new Date(year, month, day, hrs, min, sec);
+			this.instant = date.toInstant().plusMillis(milli);
+		}
 	}
 	
 	public DateTime(int year, int month, int day, int hour, int minute, int second, int millis) {
@@ -27,11 +30,11 @@ public class DateTime {
 		for(Regex regex : Regex.values()) {
 			String r = String.join("|", regex.getRegex());
 			StringBuilder sb = new StringBuilder();
-			sb.append("\\d").append("(").append(r).append(")");
+			sb.append("([0-9]+)").append("(").append(r).append(")");
 			Pattern p = Pattern.compile(sb.toString());
 			Matcher m = p.matcher(datetime);
 			if(m.find()) {
-				int value = Integer.parseInt(m.group());
+				int value = Integer.parseInt(m.group(1));
 				map.put(regex.name(), value);
 			}else {
 				map.put(regex.name(), 0);
