@@ -65,8 +65,12 @@ public class HPCmd implements CommandExecutor {
 					p.sendMessage(MessageEnum.House_Create_Fail_ThereIsNoRegion.getMessage());
 					return true;
 				}
+				if(HouseManager.isExists(args[1])) {
+					p.sendMessage(MessageEnum.House_Create_Fail_AlreadyExists.getMessage());
+					return true;
+				}
 				HouseManager.createHouse(args[1], locs[0], locs[1]);
-				p.sendMessage(MessageEnum.House_Create_Success.getMessage());
+				p.sendMessage(MessageEnum.House_Create_Success.getMessage().replace("%House_Name%", args[1]));
 				break;
 			case "delete":
 				if(!p.isOp()) {
