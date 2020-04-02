@@ -1,5 +1,5 @@
 name: HousePlugin
-main: com.marquez.houseplugin
+main: com.marquez.houseplugin.HousePlugin
 version: 1.0
 commands:
   house:
