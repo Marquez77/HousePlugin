@@ -7,6 +7,7 @@ The Minecraft House Plugin Commission.
 * /house help
 * /house invite <playername>
 * /house invite accept
+* /house invite deny
 * /house kick <playername>
 * /house info
 * /house teleport
@@ -17,4 +18,6 @@ The Minecraft House Plugin Commission.
 * /house create <name>
 * /house delete <name>
 * /house buysign <name>
+* /house door <name>
+* /house bed <name>
 * /house reload
