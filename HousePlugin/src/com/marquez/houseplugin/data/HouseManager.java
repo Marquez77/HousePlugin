@@ -1,14 +1,18 @@
 package com.marquez.houseplugin.data;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import com.marquez.houseplugin.enums.MessageEnum;
 import com.marquez.houseplugin.util.DataFile;
+import com.marquez.houseplugin.util.DateTime;
 import com.marquez.houseplugin.util.Locations;
 
 public class HouseManager {
@@ -17,6 +21,27 @@ public class HouseManager {
 	private static HashMap<Location, String> signs = new HashMap<Location, String>();
 	private static HashMap<Location, String> doors = new HashMap<Location, String>();
 	private static HashMap<Location, String> beds = new HashMap<Location, String>();
+	private static HashMap<OfflinePlayer, String> players = new HashMap<OfflinePlayer, String>();
+	
+	public static List<String> getHouses() {
+		return new ArrayList<String>(houses.keySet());
+	}
+	
+	public static boolean addPlayer(House house, OfflinePlayer p) {
+		if(house.getMember().size() == house.getMaximumPeople()) return false;
+		house.getMember().add(p);
+		players.put(p, house.getName());
+		return true;
+	}
+	
+	public static void removePlayer(House house, OfflinePlayer p) {
+		house.getMember().remove(p);
+		players.remove(p);
+	}
+	
+	public static String getHouse(OfflinePlayer p) {
+		return players.containsKey(p) ? players.get(p) : null;
+	}
 	
 	private static void addHouseValues(House house) {
 		String name = house.getName();
@@ -24,6 +49,9 @@ public class HouseManager {
 		if(house.getSignLocation() != null) signs.put(house.getSignLocation(), name);
 		if(house.getDoorLocation() != null) doors.put(house.getDoorLocation(), name);
 		if(house.getBedLocation() != null) beds.put(house.getBedLocation(), name);
+		for(OfflinePlayer member : house.getMember()) {
+			players.put(member, house.getName());
+		}
 	}
 	
 	private static void removeHouseValues(String name) {
@@ -32,26 +60,62 @@ public class HouseManager {
 		if(house.getSignLocation() != null) signs.remove(house.getSignLocation());
 		if(house.getDoorLocation() != null) doors.remove(house.getDoorLocation());
 		if(house.getBedLocation() != null) beds.remove(house.getBedLocation());
+		for(OfflinePlayer member : house.getMember()) {
+			players.remove(member);
+		}
 		houses.remove(name);
+	}
+	
+	public static String getHouseName(Location loc) {
+		if(signs.containsKey(loc)) return signs.get(loc);
+		if(doors.containsKey(loc)) return doors.get(loc);
+		if(beds.containsKey(loc)) return beds.get(loc);
+		return null;
 	}
 	
 	public static boolean setSignLocation(String name, Location loc) {
 		if(signs.containsKey(loc)) return false;
-		houses.get(name).setSignLocation(loc);
+		House house = houses.get(name);
+		if(house.getSignLocation() != null) signs.remove(house.getSignLocation());
+		house.setSignLocation(loc);
 		signs.put(loc, name);
+		refreshSign(house);
 		return true;
+	}
+	
+	public static void refreshSign(House house) {
+		Sign sign = (Sign)house.getSignLocation().getBlock().getState();
+		String[] lines;
+		if(house.getOwner() == null) {
+			lines = MessageEnum.Sign_Buy.getMessages();
+		}else {
+			lines = MessageEnum.Sign_Rental.getMessages();
+		}
+		for(int i = 0; i < lines.length && i < 4; i++) {
+			String line = lines[i].replace("%House_Name%", house.getName()).replace("%Price%", house.getPrice()+"");
+			if(house.getExpireTime() > 0) {
+				DateTime time = new DateTime(house.getExpireTime()-System.currentTimeMillis());
+				line = line.replace("%Rental_Remaining%", time.toTimeString()).replace("%House_Owner%", house.getOwner().getName()).replace("%Living_Member%", house.getMember().size()+"").replace("%Maximum_Member%", house.getMaximumPeople()+"");
+			}
+			sign.setLine(i, line);
+		}
+		sign.update();
 	}
 	
 	public static boolean setDoorLocation(String name, Location loc) {
 		if(doors.containsKey(loc)) return false;
-		houses.get(name).setDoorLocation(loc);
+		House house = houses.get(name);
+		if(house.getDoorLocation() != null) doors.remove(house.getDoorLocation());
+		house.setDoorLocation(loc);
 		doors.put(loc, name);
 		return true;
 	}
 	
 	public static boolean setBedLocation(String name, Location loc) {
 		if(beds.containsKey(loc)) return false;
-		houses.get(name).setBedLocation(loc);
+		House house = houses.get(name);
+		if(house.getBedLocation() != null) beds.remove(house.getBedLocation());
+		house.setBedLocation(loc);
 		beds.put(loc, name);
 		return true;
 	}

@@ -4,14 +4,20 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.marquez.houseplugin.cmds.HPCmd;
 import com.marquez.houseplugin.data.HouseManager;
 import com.marquez.houseplugin.enums.MessageEnum;
 import com.marquez.houseplugin.listener.AreaSelectListener;
+import com.marquez.houseplugin.listener.DoorAutoCloseListener;
+import com.marquez.houseplugin.listener.RentalExpireListener;
+import com.marquez.houseplugin.listener.SignInteractListener;
 import com.marquez.houseplugin.util.DataFile;
 import com.marquez.houseplugin.util.DateTime;
+
+import net.milkbowl.vault.economy.Economy;
 
 
 public class HousePlugin extends JavaPlugin{
@@ -21,17 +27,30 @@ public class HousePlugin extends JavaPlugin{
 	public static DateTime INVITE_EXPIRE_TIME;
 	public static int DEFAULT_MAX_PEOPLE;
 	
+	public static Economy econ;
+	public static RentalExpireListener expireListener;
+	
 	@Override
 	public void onEnable() {
-		loadConfig();
 		DataFile.init(this);
-		HouseManager.loadAllDatas();
+		loadConfig();
 		getCommand("house").setExecutor(new HPCmd(this));
+		DoorAutoCloseListener doorCloseListener = new DoorAutoCloseListener();
+		doorCloseListener.run(this);
 		Bukkit.getPluginManager().registerEvents(new AreaSelectListener(), this);
+		Bukkit.getPluginManager().registerEvents(new SignInteractListener(), this);
+		Bukkit.getPluginManager().registerEvents(doorCloseListener, this);
+		if(!setupEconomy()) {
+			Bukkit.getConsoleSender().sendMessage(MessageEnum.info_Prefix.getMessage() + "§cCan not found vault dependency!");
+		}
+		HouseManager.loadAllDatas();
+		expireListener = new RentalExpireListener();
+		expireListener.start();
 	}
 	
 	@Override
 	public void onDisable() {
+		expireListener.interrupt();
 		HouseManager.saveAllData();
 	}
 	
@@ -61,6 +80,7 @@ public class HousePlugin extends JavaPlugin{
 			if(!config.isSet(key)) {
 				if(msgEnum.isList()) config.set(key, msgEnum.getMessages());
 				else config.set(key, msgEnum.getMessage());
+				msgEnum.setMessage(msgEnum.getMessages());
 			}else {
 				if(config.isList(key)) msgEnum.setMessage(config.getStringList(key).toArray(new String[0]));
 				else msgEnum.setMessage(config.getString(key));
@@ -69,5 +89,15 @@ public class HousePlugin extends JavaPlugin{
 		this.saveConfig();
 	}
 	
-
+	private boolean setupEconomy() {
+		if (getServer().getPluginManager().getPlugin("Vault") == null) {
+			return false;
+		}
+		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+		if (rsp == null) {
+			return false;
+		}
+		econ = rsp.getProvider();
+		return econ != null;
+	}
 }

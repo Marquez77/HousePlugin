@@ -11,7 +11,7 @@ public class DateTime {
 	private Instant instant;
 	private String regex;
 	
-	public void setInstant(int year, int month, int day, int hrs, int min, int sec, int milli) {
+	public void setInstant(int year, int month, int day, int hrs, int min, int sec, long milli) {
 		if(year == 0) this.instant = Instant.ofEpochMilli(((((day*24+hrs)*60+min)*60+sec)*1000+milli));
 		else {
 			@SuppressWarnings("deprecation")
@@ -22,6 +22,10 @@ public class DateTime {
 	
 	public DateTime(int year, int month, int day, int hour, int minute, int second, int millis) {
 		setInstant(year, month, day, hour, minute, second, millis);
+	}
+	
+	public DateTime(long millis) {
+		setInstant(0, 0, 0, 0, 0, 0, millis);
 	}
 	
 	public DateTime(String datetime) {
@@ -65,6 +69,15 @@ public class DateTime {
 	
 	public String getRegex() {
 		return this.regex;
+	}
+	
+	public String toTimeString() {
+		StringBuilder sb = new StringBuilder();
+		if(getHours() > 0) sb.append(getHours() + "시간 ");
+		if(getMinutes() > 0) sb.append(getMinutes()-getHours()*60 + "분 ");
+		if(getSeconds() > 0) sb.append(getSeconds()-getMinutes()*60 + "초 ");
+		if(sb.length() > 0) sb.setLength(sb.length()-1);
+		return sb.toString();
 	}
 
 }

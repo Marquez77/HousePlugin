@@ -21,6 +21,7 @@ public class House {
 	private int doorCloseTime;
 	private OfflinePlayer owner;
 	private List<OfflinePlayer> member;
+	private long expireTime;
 	
 	public House(String name, Location pos1, Location pos2) {
 		this.name = name;
@@ -30,6 +31,7 @@ public class House {
 		this.maximumPeople = HousePlugin.DEFAULT_MAX_PEOPLE;
 		this.doorCloseTime = 1;
 		this.member = new ArrayList<OfflinePlayer>();
+		this.expireTime = 0L;
 	}
 
 	public String getName() {
@@ -118,5 +120,13 @@ public class House {
 
 	public void setMember(List<OfflinePlayer> member) {
 		this.member = member;
+	}
+
+	public long getExpireTime() {
+		return expireTime;
+	}
+
+	public void setExpireTime(long expireTime) {
+		this.expireTime = expireTime;
 	}	
 }
