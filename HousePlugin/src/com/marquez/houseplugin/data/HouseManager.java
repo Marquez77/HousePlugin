@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.material.Door;
 
 import com.marquez.houseplugin.enums.MessageEnum;
 import com.marquez.houseplugin.util.DataFile;
@@ -103,6 +104,7 @@ public class HouseManager {
 	}
 	
 	public static boolean setDoorLocation(String name, Location loc) {
+		if(((Door)loc.getBlock().getState()).isTopHalf()) loc.subtract(0, 1, 0);
 		if(doors.containsKey(loc)) return false;
 		House house = houses.get(name);
 		if(house.getDoorLocation() != null) doors.remove(house.getDoorLocation());
@@ -162,6 +164,7 @@ public class HouseManager {
 		houseDatac.set("door_close_time", house.getDoorCloseTime());
 		houseDatac.set("owner", house.getOwner());
 		houseDatac.set("member", house.getMember());
+		houseDatac.set("expire", house.getExpireTime());
 		houseData.saveConfig();
 	}
 	
@@ -191,6 +194,7 @@ public class HouseManager {
 		if(owner != null) house.setOwner((OfflinePlayer)owner);
 		List<?> member = houseDatac.getList("member");
 		if(member != null) house.setMember((List<OfflinePlayer>)member);
+		house.setExpireTime(houseDatac.getLong("expire"));
 		addHouseValues(house);
 	}
 	

@@ -166,7 +166,8 @@ public class HPCmd implements CommandExecutor {
 				}
 				String[] members = array.toArray(new String[array.size()]);
 				for(String s : MessageEnum.House_Info_Message.getMessages()) {
-					s.replace("%House_Owner%", house.getOwner().getName())
+					s = s.replace("%House_Name%", house.getName()) 
+					.replace("%House_Owner%", house.getOwner().getName())
 					.replace("%Price%", house.getPrice()+"")
 					.replace("%Rental_Remaining%", new DateTime(house.getExpireTime()-System.currentTimeMillis()).toTimeString())
 					.replace("%Maximum_Member%", house.getMaximumPeople()+"")
@@ -217,7 +218,7 @@ public class HPCmd implements CommandExecutor {
 				if(house.getOwner().getName().equals(p.getName())) {
 					house.setOwner(null);
 					house.setExpireTime(0);
-					for(OfflinePlayer member : house.getMember()) {
+					for(OfflinePlayer member : new ArrayList<OfflinePlayer>(house.getMember())) {
 						HouseManager.removePlayer(house, member);
 						if(member.getName().equals(p.getName())) continue;
 						if(member.isOnline()) {
@@ -270,7 +271,7 @@ public class HPCmd implements CommandExecutor {
 					return true;
 				}
 				HouseManager.deleteHouse(args[1]);
-				p.sendMessage(MessageEnum.House_Delete_Success.getMessage());
+				p.sendMessage(MessageEnum.House_Delete_Success.getMessage().replace("%House_Name%", args[1]));
 				break;
 			case "buysign": {
 				if(!p.hasPermission("house.admin")) {

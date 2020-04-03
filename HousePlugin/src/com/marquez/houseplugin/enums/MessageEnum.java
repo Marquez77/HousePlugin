@@ -64,7 +64,7 @@ public enum MessageEnum {
 	Bed_Set_Fail_NoBed("[House] 해당 블럭은 Bed가 아닙니다."),
 	House_Reload_Success("[House] Config 리로드에 성공하였습니다."),
 	House_Rental_Expire("[House] 집 렌탈 기간이 종료되었습니다!"),
-	House_Rental_Success("[House] 집 렌탈에 성공하였습니다. 남은 시간 - [%Rental_Remaining%]"),
+	House_Rental_Success_Default("[House] 집 렌탈에 성공하였습니다. 남은 시간 - [%Rental_Remaining%]"),
 	House_Rental_Success_AppendTime("[House] 추가 렌탈에 성공하였습니다. 남은 시간 - [%Rental_Remaining%]"),
 	House_Rental_Fail_InsufficientCost("[House] 비용이 부족하여 집 렌탈에 실패하였습니다."),
 	House_Rental_Fail_Maximum("[House] 더 이상 집을 렌탈할 수 없습니다."),

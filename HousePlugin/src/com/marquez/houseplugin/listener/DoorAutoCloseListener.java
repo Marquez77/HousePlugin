@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,13 +27,9 @@ public class DoorAutoCloseListener implements Listener{
 			Block block = e.getClickedBlock();
 			if(block.getType().toString().contains("DOOR")) {
 				Location loc = block.getLocation();
-				Door door = (Door)block.getState();
-				if(door.isOpen()) {
-					if(closeTime.containsKey(loc)) {
-						closeTime.remove(loc);
-					}
-					return;
-				}
+				Door door = (Door)block.getState().getData();
+				if(door.isOpen()) return;
+				if(door.isTopHalf()) loc.subtract(0, 1, 0);
 				Player p = e.getPlayer();
 				String name = HouseManager.getHouse(p);
 				if(name == null) return;
@@ -53,8 +50,11 @@ public class DoorAutoCloseListener implements Listener{
 				for(Location loc : closeTime.keySet()) {
 					if(closeTime.get(loc) <= System.currentTimeMillis()) {
 						closeTime.remove(loc);
-						Door door = (Door)loc.getBlock().getState();
+						BlockState state = loc.getBlock().getState();
+						Door door = (Door)state.getData();
 						door.setOpen(false);
+						state.setData(door);
+						state.update();
 					}
 				}
 			}
