@@ -104,7 +104,7 @@ public class HouseManager {
 	}
 	
 	public static boolean setDoorLocation(String name, Location loc) {
-		if(((Door)loc.getBlock().getState()).isTopHalf()) loc.subtract(0, 1, 0);
+		if(((Door)loc.getBlock().getState().getData()).isTopHalf()) loc.subtract(0, 1, 0);
 		if(doors.containsKey(loc)) return false;
 		House house = houses.get(name);
 		if(house.getDoorLocation() != null) doors.remove(house.getDoorLocation());
