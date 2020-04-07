@@ -125,7 +125,10 @@ public class HPCmd implements CommandExecutor {
 								p.sendMessage(MessageEnum.Invite_Expire.getMessage());
 								target.sendMessage(MessageEnum.Invite_Expire.getMessage());
 							}
-							Bukkit.getScheduler().cancelTask(inviteTask.get(p));
+							int task = inviteTask.get(p);
+							inviteTask.remove(p);
+							invitePlayer.remove(target);
+							Bukkit.getScheduler().cancelTask(task);
 							return;
 						}
 					}
@@ -266,7 +269,7 @@ public class HPCmd implements CommandExecutor {
 					p.sendMessage(MessageEnum.info_InvalidUsage.getMessage());
 					return true;
 				}
-				if(HouseManager.isExists(args[1])) {
+				if(!HouseManager.isExists(args[1])) {
 					p.sendMessage(MessageEnum.House_Delete_FailInvaildHouse.getMessage());
 					return true;
 				}
